@@ -49,6 +49,7 @@ end
 % match = feature_match(desc1, desc2);
 % Show a figure with lines joining the accepted matches.
 
+%%%% Display Feature Matched %%%% 
 for i=1:size(imgs,2)-1
     img = [grayscales{i} grayscales{i+1}];
     figure(i);
@@ -56,11 +57,11 @@ for i=1:size(imgs,2)-1
     colormap('gray');
     hold on;
     cols1 = size(imgs{i},2);
-    for j=1:size(matches{i},1)
+    for j=1:10
         x1 = points{i}(j,1);
         y1 = points{i}(j,2);
         if(matches{i}(j) > 0)
-            x2 = points{i+1}(matches{i}(j),1) + cols1;
+            x2 = points{i+1}(matches{i}(j),1) + cols1 + 50;
             y2 = points{i+1}(matches{i}(j),2);
             plot(x1,y1, 'go');
             plot(x2,y2, 'c+');
@@ -76,7 +77,21 @@ for i=1:size(imgs,2)-1
     end
     hold off;
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
+disp('Image Matching')
+M = cell(1, size(imgs, 2) - 1);
+for i=1:size(imgs, 2) - 1
+    X1 = zeros(size(matches{i}, 1), 2);
+    X2 = zeros(size(matches{i}, 1), 2);
+    for j=1:size(matches{i}, 1)
+        if (matches{i}(j) > 0)
+            X1(j,1:2) = [points{i}(j, 1), points{i}(j, 2)];
+            X2(j,1:2) = [points{i+1}(matches{i}(j), 1), points{i+1}(matches{i}(j), 2)];
+        end
+    end
+    M{i} = ransac(X1, X2, grayscales{i}, grayscales{i+1});
+end
 
 %%%%%
 
