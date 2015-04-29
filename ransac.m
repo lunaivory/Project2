@@ -1,8 +1,8 @@
 function M = ransac(X1, X2, IMG1, IMG2)
-  k = 35;
+  k = 100;
   c = 0;
-  d = 4;
-  n = 4;
+  d = 100;
+  n = 20;
   sz = size(X1, 1);
 
   for i = 1:k
@@ -19,7 +19,6 @@ function M = ransac(X1, X2, IMG1, IMG2)
     D = D2(:,1) + D2(:,2);
     tmp = sum(D < d);
     if tmp > c
-      disp(D);
       c = tmp;
       M = X;
       Dr = D < d;
@@ -44,6 +43,7 @@ function PlotRansac(X1, X2, D, IMG1, IMG2)
       plot(x2, y2, 'r.');
       %line([x1 x2], [y1 y2], 'Color', 'w');
     else
+      %fprintf('MATCH %d %d %d %d\n', x1, y1, x2, y2);
       plot(x1, y1, 'go');
       plot(x2, y2, 'go');
       line([x1 x2], [y1 y2], 'Color', 'g');
