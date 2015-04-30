@@ -16,7 +16,7 @@ function M = ransac(X1, X2, IMG1, IMG2)
       B(j, :) = X2(itr, :);
     end
     X = A\B;
-    disp(X);
+%     disp(X);
     nX1 = X11*X;
     D2 = (nX1-X2).*(nX1-X2);
     D = D2(:,1) + D2(:,2);
@@ -28,14 +28,14 @@ function M = ransac(X1, X2, IMG1, IMG2)
 %     end
     tmp = sum(D < d);
     %fprintf('%d vs %d', cal, tmp);
-    disp(tmp);
+%     disp(tmp);
     if tmp > c
       c = tmp;
       M = X;
       Dr = D < d;
     end
   end
-  fprintf('%d over %d\n', c, sz);
+%   fprintf('%d over %d\n', c, sz);
   PlotRansac(X1, X2, Dr, IMG1, IMG2);
 end
 
@@ -43,6 +43,7 @@ function PlotRansac(X1, X2, D, IMG1, IMG2)
   img = [IMG1, IMG2];
   imagesc(img);
   colormap('gray');
+  axis off;
   hold on;
   cols = size(IMG1, 2);
   for i=1:size(D)

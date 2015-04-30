@@ -1,5 +1,5 @@
 function match = feature_match(desc1, desc2)
-%FEATURE_MATCH Summary of this function goes here
+%FEATURE_MATCH Match features between feature descriptors
 %   Detailed explanation goes here
     match = zeros(size(desc1,1), 1);
 
@@ -12,7 +12,10 @@ function match = feature_match(desc1, desc2)
         [min1, min_index] = min(dists);
         dists(min_index) = NaN;
         min2 = min(dists);
-        if (min1/min2) < 0.6
+        % From lecture slides:
+        % If ratio between closest and second closest distance < 0.8
+        % it is considered a match
+        if (min1/min2) < 0.8
             match(i) = min_index;
         end
     end
