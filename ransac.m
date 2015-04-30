@@ -21,11 +21,11 @@ function M = ransac(X1, X2, IMG1, IMG2)
     D2 = (nX1-X2).*(nX1-X2);
     D = D2(:,1) + D2(:,2);
     cal = 0;
-    for kk = 1:size(D)
-       fprintf('%d %d\n', nX1(kk,1)-X2(kk,1), nX1(kk,2)-X2(kk,2));
-       %fprintf('%d : %d < %d ? %d',kk, D(kk), d, D(kk) < d);
-       cal = cal + 1;
-    end
+%     for kk = 1:size(D)
+%        fprintf('%d %d\n', nX1(kk,1)-X2(kk,1), nX1(kk,2)-X2(kk,2));
+%        fprintf('%d : %d < %d ? %d',kk, D(kk), d, D(kk) < d);
+%        cal = cal + 1;
+%     end
     tmp = sum(D < d);
     %fprintf('%d vs %d', cal, tmp);
     disp(tmp);
@@ -52,7 +52,9 @@ function PlotRansac(X1, X2, D, IMG1, IMG2)
       %fprintf('No MATCH %d %d %d %d\n', x1, y1, x2, y2);
       plot(x1, y1, 'r.');
       plot(x2, y2, 'r.');
-      line([x1 x2], [y1 y2], 'Color', 'w');
+      if (mod(i,10) == 0)
+        line([x1 x2], [y1 y2], 'Color', 'w');
+      end
     else
       %fprintf('MATCH %d %d %d %d\n', x1, y1, x2, y2);
       plot(x1, y1, 'go');
