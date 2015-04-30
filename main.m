@@ -65,7 +65,7 @@ end
 % end
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-disp('Image Matching')
+disp('Matching Images')
 M = cell(1, size(imgs, 2) - 1);
 for i=1:size(imgs, 2) - 1
     X1 = [];
