@@ -19,9 +19,9 @@ for i=1:size(imgs,2)
     points{i} = harris_corner(grayscales{i}, sigma, radius, threshold);
 end
 
-% get sift descriptors
+% get mops descriptors
 
-disp('Calculating MSOP descriptors')
+disp('Calculating MOPS descriptors')
 descriptors = cell(1,size(imgs, 2));
 for i=1:size(imgs,2)
     descriptors{i} = mops_descriptor(grayscales{i}, points{i});
