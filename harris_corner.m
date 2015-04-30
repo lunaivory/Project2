@@ -50,8 +50,8 @@ function points = harris_corner( img, sigma, radius, thresh )
 %     harris = (Ix2.*Iy2 - Ixy.^2) - k*(Ix2 + Iy2).^2;
 
     % don't want corners close to image border
-    harris([1:15, end-16:end], :) = 0;
-    harris(:,[1:15,end-16:end]) = 0;
+    harris([1:19, end-19:end], :) = 0;
+    harris(:,[1:19,end-19:end]) = 0;
 
     % 4. grayscale morphological dilate
     size = 2*radius + 1;

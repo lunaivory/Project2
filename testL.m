@@ -1,12 +1,13 @@
-I1 = rgb2gray(imread('imgs/1.jpg'));
-I2 = rgb2gray(imread('imgs/2.jpg'));
-points1 = detectHarrisFeatures(I1);
-points2 = detectHarrisFeatures(I2);
+I1 = rgb2gray(imread('photo/1.jpg'));
+I2 = rgb2gray(imread('photo/2.jpg'));
+points1 = cornerPoints(harris_corner(I1, 2, 2, 1000));
+points2 = cornerPoints(harris_corner(I2, 2, 2, 1000));
 [features1, valid_points1] = extractFeatures(I1, points1);
 [features2, valid_points2] = extractFeatures(I2, points2);
 indexPairs = matchFeatures(features1, features2);
 matchedPoints1 = valid_points1(indexPairs(:, 1), :);
 matchedPoints2 = valid_points2(indexPairs(:, 2), :);
-figure;
+figure(1);
 showMatchedFeatures(I1, I2, matchedPoints1, matchedPoints2);
+figure(2);
 ransac(floor(matchedPoints1.Location), floor(matchedPoints2.Location), I1, I2);
