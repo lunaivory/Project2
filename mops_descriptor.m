@@ -1,4 +1,4 @@
-function descriptors = msop_descriptor( img, points )
+function descriptors = mops_descriptor( img, points )
 
     % Convert to grayscale if needed
     if(ndims(img) == 3)

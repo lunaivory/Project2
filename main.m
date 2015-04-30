@@ -24,7 +24,7 @@ end
 disp('Calculating MSOP descriptors')
 descriptors = cell(1,size(imgs, 2));
 for i=1:size(imgs,2)
-    descriptors{i} = msop_descriptor(grayscales{i}, points{i});
+    descriptors{i} = mops_descriptor(grayscales{i}, points{i});
 end
 
 disp('Matching features')
