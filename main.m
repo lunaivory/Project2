@@ -78,10 +78,17 @@ for i=1:size(imgs, 2) - 1
             X2(itr,1:2) = [points{i+1}(matches{i}(j), 1), points{i+1}(matches{i}(j), 2)];
         end
     end
-    figure(i);
-    M{i} = ransac(X1, X2, grayscales{i}, grayscales{i+1});
+    % figure(i);
+    M{i} = ransac(X2, X1, grayscales{i+1}, grayscales{i});
 end
 
+disp('Stitching Images');
+for i=1:size(imgs,2) - 1
+    subplot(1,2,1), imshow(imgs{i});
+    tForm = affine2d(M{i});
+    T = imwarp(imgs{i+1},tForm);
+    subplot(1,2,2), imshow(T);
+end
 %%%%%
 
 % figure(2); clf; imagesc(img1); hold on;
