@@ -1,9 +1,9 @@
 function M = ransac(X1, X2, IMG1, IMG2)
-  k = 100;
+  k = 88800;
   c = 0;
   d = 1;
   sz = size(X1, 1);
-  n = 4;
+  n = 6;
   X11 = ones(sz, 3);
   X11(:,1:2) = X1(:,1:2);
   
@@ -35,8 +35,10 @@ function M = ransac(X1, X2, IMG1, IMG2)
       Dr = D < d;
     end
   end
-%   fprintf('%d over %d\n', c, sz);
-  PlotRansac(X1, X2, Dr, IMG1, IMG2);
+   fprintf('%d over %d\n', c, sz);
+   figure(1);
+   PlotRansac(X1, X2, Dr, IMG1, IMG2);
+   pause();
 end
 
 function PlotRansac(X1, X2, D, IMG1, IMG2)

@@ -6,6 +6,7 @@ sigma = 2;
 radius = 2;
 threshold = 1000;
 
+disp('Loading Images')
 [imgs, grayscales] = load_imgs();
 
 img1 = grayscales{1};
@@ -66,29 +67,35 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 disp('Matching Images')
-M = cell(1, size(imgs, 2) - 1);
-for i=1:size(imgs, 2) - 1
-    X1 = [];
-    X2 = [];
-    itr = 0;
-    for j=1:size(matches{i}, 1)
-        if (matches{i}(j) > 0)
-            itr = itr + 1;
-            X1(itr,1:2) = [points{i}(j, 1), points{i}(j, 2)];
-            X2(itr,1:2) = [points{i+1}(matches{i}(j), 1), points{i+1}(matches{i}(j), 2)];
-        end
+Tform = cell(1, size(imgs,2));
+mid = ceil(size(imgs,2)/2);
+Tform{mid} = affine2d(eye(3));
+for i = mid:size(imgs,2)-1
+    [X1,X2] = siftMatched(matches{i}, points{i}, points{i+1});
+    Tform{i+1} = affine2d(ransac(X2, X1, grayscales{i+1}, grayscales{i}));
+    if (i > mid)
+        Tform{i+1}.T = Tform{i}.T * Tform{i+1}.T;
     end
-    % figure(i);
-    M{i} = ransac(X2, X1, grayscales{i+1}, grayscales{i});
 end
+for i = mid:-1:2
+    [X2,X1] = siftMatched(matches{i-1}, points{i-1}, points{i});
+    Tform{i-1} = affine2d(ransac(X2, X1, grayscales{i-1}, grayscales{i}));
+    if (i < mid)
+        Tform{i-1}.T = Tform{i}.T * Tform{i-1}.T;
+    end
+end
+% Tform = cell(1, size(imgs, 2));
+% Tform{1} = affine2d(eye(3));
+% for i=1:size(imgs, 2) - 1
+%     [X1, X2] = siftMatched(matches{i}, points{i}, points{i+1});
+%     Tform{i+1} = affine2d(ransac(X2, X1, grayscales{i+1}, grayscales{i}));
+%     if (i>1)
+%         Tform{i+1}.T = Tform{i}.T * Tform{i+1}.T;
+%     end
+% end
 
 disp('Stitching Images');
-for i=1:size(imgs,2) - 1
-    subplot(1,2,1), imshow(imgs{i});
-    tForm = affine2d(M{i});
-    T = imwarp(imgs{i+1},tForm);
-    subplot(1,2,2), imshow(T);
-end
+S = stitch(imgs, Tform);
 %%%%%
 
 % figure(2); clf; imagesc(img1); hold on;
