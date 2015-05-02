@@ -1,11 +1,11 @@
-function S = stitch(imgs, Tform)
+function S = stitchLinearBlend(imgs, Tform)
     n = size(imgs, 2);
-    %%% Align Tform & initial panorama%%%
-    mid = round(n/2);
-    % invT = invert(Tform{mid-1});
+
     imgSize = size(imgs{1});
+
+    % Initialize panorama size
+    
     for i=1:n
-        %Tform{i}.T = invT.T * Tform{i}.T;
         [xlim(i,:), ylim(i,:)] = outputLimits(Tform{i}, [1, imgSize(2)], [1, imgSize(1)]);
     end
     maxX = ceil(max(max(xlim(:,:)))); minX = ceil(min(min(xlim(:,:))));
@@ -16,21 +16,31 @@ function S = stitch(imgs, Tform)
     S = zeros([height width 3], 'like', imgs{1});
 
     coordinate = imref2d([height width], [minX maxX], [minY maxY]);
+    
+    % Start blending and stitching
+
     xLast{n} = 0;
     for i = 1:n
         W = imwarp(imgs{i}, Tform{i}, 'OutputView', coordinate);
         imgSize = size(W(:,:,1));
-        xFirst = 0;
-        midy = ceil(imgSize(1)/2);
-        for x = 1: imgSize(2)
-            for y = 1:imgSize(1)
-               if (sum(W(y,x,:) > 0))
-                   xFirst = x;
-                   break;
-               end
-            end
-            if(xFirst > 0)
-                break;
+        
+        xFirst = getXFirst(imgSize, W);
+
+        [p0, p1] = getPoissonBound(xLast, xFirst, i);
+
+        for y = 1:imgSize(1)
+            for x = 1:imgSize(2)
+
+                if (x < p0)
+                    continue;
+                elseif (x > p1)
+                    if(sum(W(y,x,:)) > 0)
+                        S(y,x,:) = W(y,x,:);
+                    end
+                else
+                    
+                end
+                
             end
         end
         
@@ -55,6 +65,29 @@ function S = stitch(imgs, Tform)
     imshow(S);
 end
 
+function xFirst = getXFirst(imgSize, W)
 
+    xFirst = 0;
+    for x = 1: imgSize(2)
+        for y = 1:imgSize(1)
+           if (sum(W(y,x,:) > 0))
+               xFirst = x;
+               break;
+           end
+        end
+        if(xFirst > 0)
+            break;
+        end
+    end
+end
 
+function [bound0, bound1] = getPoissonBound(xLast, xFirst, itr)
 
+    if (itr == 1) 
+        bound0 = 0;
+        bound1 = 0;
+    else
+        bound0 = (xLast{itr-1} - xFirst)/4 + xFirst;
+        bound1 = (xLast{itr-1} - xFirst)*3/4 + xFirst;
+    end
+end
