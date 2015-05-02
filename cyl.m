@@ -12,10 +12,6 @@ function IMG = cyl(I,f)
             Y(x+rx+1, y+ry+1) = yinv;
         end
     end    
-    minx = min(min(X));
-    maxx = max(max(X));
-    miny = min(min(Y));
-    maxy = max(max(Y));
     X = X + mx; Y = Y + my;
     for x = 1: (rx*2+1)
         for y = 1 : (ry*2+1)
@@ -40,6 +36,6 @@ function IMG = cyl(I,f)
                          w01 * I(xx, yy1, :) + w11 * I(xx1, yy1, :);
         end
     end
-    subplot(1,2,1), imshow(I);
-    subplot(1,2,2), imshow(IMG);
+    % subplot(1,2,1), imshow(I);
+    % subplot(1,2,2), imshow(IMG);
 end
